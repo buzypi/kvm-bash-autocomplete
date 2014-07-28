@@ -1,0 +1,28 @@
+#!/bin/bash
+function _generic_completer {
+    # Current part of the auto-completion is available here
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    filtered_words=""
+    options="$1"
+    for word in $options;do if [[ $word == $cur* ]];then filtered_words="$filtered_words $word";fi;done
+    COMPREPLY=( $(compgen -W "$filtered_words"))
+}
+
+function _ssh_completer {
+    vms=`virsh list | grep running | awk '{print $2}' | tr "\\n" " "`
+    _generic_completer "$vms"
+}
+
+function _vm_completer {
+    vms=`virsh list --all |  grep "shut off" | awk '{print $2}' | tr "\\n" " "`
+    _generic_completer "$vms"
+}
+
+function _running_vm_completer {
+    vms=`virsh list | grep running | awk '{print $2}' | tr "\\n" " "`
+    _generic_completer "$vms"
+}
+
+complete -F _ssh_completer ssh-to
+complete -F _vm_completer start-vm
+complete -F _running_vm_completer stop-vm
