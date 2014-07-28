@@ -1,0 +1,2 @@
+#!/bin/bash
+ssh -t ubuntu@$1 sudo init 0
